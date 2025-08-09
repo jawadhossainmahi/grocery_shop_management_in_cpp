@@ -103,6 +103,7 @@ void employeeDashboard()
         else
         {
             cout << "Logging out...\n";
+            
             break;
         }
     }
