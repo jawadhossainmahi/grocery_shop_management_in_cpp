@@ -371,6 +371,8 @@ public:
 
         cout << "Product deleted successfully.\n";
     }
+
+
 };
 
 void employeeDashboard()
@@ -380,7 +382,7 @@ void employeeDashboard()
     while (true)
     {
         int choice;
-        cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Logout Enter choice: ";
+        cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Logout\n Enter choice: ";
         cin >> choice;
         switch (choice)
         {
