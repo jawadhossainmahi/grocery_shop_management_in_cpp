@@ -291,36 +291,49 @@ public:
         double price;
         int quantity;
 
+        string temp_str;
         cout << "Enter new product name (current: " << temp->name << ", press: s for keep current): ";
-
-        cin >> name;
-        if (name == "s" || name == "S")
+        cin >> temp_str;
+        if (temp_str == "s" || temp_str == "S")
         {
-            name = temp->name; 
+            name = temp->name;
+        }
+        else
+        {
+            name = temp_str;
         }
         cout << "Enter new product price (current: " << temp->price << ", press: s for keep current): ";
-        cin >> price;
-        if (price == 's' || price == 'S')
+        cin >> temp_str;
+        if (temp_str == "s" || temp_str == "S")
         {
-            price = temp->price; 
+            price = temp->price;
+        }
+        else
+        {
+            price = stod(temp_str);
         }
         cout << "Enter new product quantity (current: " << temp->quantity << ", press: s for keep current): ";
-        cin >> quantity;
-        if (quantity == 's' || quantity == 'S')
+        cin >> temp_str;
+        if (temp_str == "s" || temp_str == "S")
         {
-            quantity = temp->quantity; 
+            quantity = temp->quantity;
         }
+        else
+        {
+            quantity = stoi(temp_str);
+        }
+
         cout << "Enter new product manufacturer date (current: " << temp->manufacturer_date << ", press: s for keep current): ";
         cin >> manufacturer_date;
         if (manufacturer_date == "s" || manufacturer_date == "S")
         {
-            manufacturer_date = temp->manufacturer_date; 
+            manufacturer_date = temp->manufacturer_date;
         }
         cout << "Enter new product expiry date (current: " << temp->expiry_date << ", press: s for keep current): ";
         cin >> expiry_date;
         if (expiry_date == "s" || expiry_date == "S")
         {
-            expiry_date = temp->expiry_date; 
+            expiry_date = temp->expiry_date;
         }
 
         temp->name = name;
@@ -371,8 +384,6 @@ public:
 
         cout << "Product deleted successfully.\n";
     }
-
-
 };
 
 void employeeDashboard()
@@ -384,7 +395,7 @@ void employeeDashboard()
         int choice;
         cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Logout\n Enter choice: ";
         cin >> choice;
-        
+
         switch (choice)
         {
         case 1:
