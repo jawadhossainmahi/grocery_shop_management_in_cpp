@@ -67,7 +67,8 @@ void registerUser(const string &role)
 
     string filename = role == "customer" ? "customers.txt" : "employees.txt";
     bool isDuplicate = duplicateUsernameCheck(username, filename);
-    if(!isDuplicate){
+    if (!isDuplicate)
+    {
         ofstream file(filename, ios::app);
         int id = getNextId(filename);
         string encrypted = encrypt(password);
@@ -83,7 +84,11 @@ void CustomerList()
     cout << "Customer List:\n";
     while (getline(file, line))
     {
-        cout << line << "\n";
+        stringstream ss(line);
+        string id, user;
+        getline(ss, id, ',');
+        getline(ss, user, ',');
+        cout << "ID: "<<id<<" "<<" username: "<<user<<endl;
     }
 }
 
@@ -103,6 +108,7 @@ void employeeDashboard()
         else
         {
             cout << "Logging out...\n";
+
 
             break;
         }
