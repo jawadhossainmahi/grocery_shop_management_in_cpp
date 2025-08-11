@@ -103,7 +103,28 @@ void employeeDashboard()
         else
         {
             cout << "Logging out...\n";
-            
+
+            break;
+        }
+    }
+}
+
+void customerDashboard()
+{
+    cout << "Welcome to the Customer Dashboard\n";
+    while (true)
+    {
+        int choice;
+        cout << "\n1. View Products\n2. Logout\nEnter choice: ";
+        cin >> choice;
+
+        if (choice == 1)
+        {
+            cout << "Displaying products...\n"; // Placeholder for product display
+        }
+        else
+        {
+            cout << "Logging out...\n";
             break;
         }
     }
@@ -131,7 +152,14 @@ bool loginUser(const string &role)
         if (user == username && pass == encrypted)
         {
             cout << "Login successful. Welcome " << role << " " << username << "\n";
-            employeeDashboard();
+            if(role == "customer")
+            {
+                customerDashboard();
+            }
+            else if(role == "employee")
+            {
+                employeeDashboard();
+            }
             return true;
         }
     }
