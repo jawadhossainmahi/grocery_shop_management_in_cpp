@@ -8,6 +8,8 @@ using namespace std;
 string productFile = "products.txt";
 string customerFile = "customers.txt";
 string employeeFile = "employees.txt";
+string orderFile = "orders.txt";
+string orderDetailsFile = "order_details.txt";
 
 string encrypt(string text, int key = 3)
 {
@@ -109,7 +111,184 @@ public:
     product *next = NULL;
 };
 
-product *head = NULL;
+product *product_head = NULL;
+
+class order
+{
+public:
+    int id;
+    int customer_id;
+    double total_price;
+    order *next = NULL;
+};
+
+class orderDetails
+{
+public:
+    int id;
+    int order_id;
+    int product_id;
+    int quantity;
+    double price;
+    orderDetails *next = NULL;
+};
+
+double total_price = 0.0;
+
+class cart
+{
+public:
+    int product_id;
+    string product_name;
+    double product_price;
+    int quantity = 0;
+    double price = 0.0;
+    cart *next = NULL;
+};
+
+order *order_head = NULL;
+orderDetails *orderDetails_head = NULL;
+
+class orderHelper
+{
+public:
+    void loadFromFile()
+    {
+        ifstream order_F(orderFile);
+        ifstream orderD_F(orderDetailsFile);
+        if (!order_F || !orderD_F)
+        {
+            cout << "No previous order file found.\n";
+            return;
+        }
+
+        string line;
+        while (getline(order_F, line))
+        {
+            if (line.empty())
+                continue;
+            stringstream ss(line);
+            order *newOrder = new order();
+            string idStr, customer_id, totalPriceStr;
+            getline(ss, idStr, ',');
+            newOrder->id = stoi(idStr);
+            getline(ss, customer_id, ',');
+            newOrder->customer_id = stoi(customer_id);
+            getline(ss, totalPriceStr, ',');
+            newOrder->total_price = stod(totalPriceStr);
+            if (order_head == NULL)
+            {
+                order_head = newOrder;
+            }
+            else
+            {
+                order *temp = order_head;
+                while (temp->next != NULL)
+                {
+                    temp = temp->next;
+                }
+                temp->next = newOrder;
+            }
+        }
+
+        while (getline(orderD_F, line))
+        {
+            if (line.empty())
+                continue;
+            stringstream ss(line);
+            orderDetails *newOrderDetails = new orderDetails();
+            string idStr, order_idStr, product_idStr, quantityStr, priceStr;
+            getline(ss, idStr, ',');
+            newOrderDetails->id = stoi(idStr);
+            getline(ss, order_idStr, ',');
+            newOrderDetails->order_id = stoi(order_idStr);
+            getline(ss, product_idStr, ',');
+            newOrderDetails->product_id = stoi(product_idStr);
+            getline(ss, quantityStr, ',');
+            newOrderDetails->quantity = stoi(quantityStr);
+            getline(ss, priceStr, ',');
+            newOrderDetails->price = stod(priceStr);
+
+            if (orderDetails_head == NULL)
+            {
+                orderDetails_head = newOrderDetails;
+            }
+            else
+            {
+                orderDetails *temp = orderDetails_head;
+                while (temp->next != NULL)
+                {
+                    temp = temp->next;
+                }
+                temp->next = newOrderDetails;
+            }
+        }
+    }
+
+    int orderIdGenerator()
+    {
+        int id;
+        if (order_head == NULL)
+        {
+            id = 1;
+        }
+        else
+        {
+            order *temp = order_head;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            id = temp->id + 1;
+        }
+        return id;
+    }
+
+    int orderDetailsIdGenerator()
+    {
+        int id;
+        if (orderDetails_head == NULL)
+        {
+            id = 1;
+        }
+        else
+        {
+            orderDetails *temp = orderDetails_head;
+            while (temp->next != NULL)
+            {
+                temp = temp->next;
+            }
+            id = temp->id + 1;
+        }
+        return id;
+    }
+
+    void saveToFile()
+    {
+        ofstream order_F(orderFile);
+        ofstream orderD_F(orderDetailsFile);
+        if (!order_F || !orderD_F)
+        {
+            cout << "Error opening order file for writing.\n";
+            return;
+        }
+
+        order *temp = order_head;
+        while (temp != NULL)
+        {
+            order_F << temp->id << "," << temp->customer_id << "," << temp->total_price << "\n";
+            temp = temp->next;
+        }
+
+        orderDetails *tempD = orderDetails_head;
+        while (tempD != NULL)
+        {
+            orderD_F << tempD->id << "," << tempD->order_id << "," << tempD->product_id
+                     << "," << tempD->quantity << "," << tempD->price << "\n";
+            tempD = tempD->next;
+        }
+    }
+};
 
 class productHelper
 {
@@ -142,13 +321,13 @@ public:
             getline(ss, newProduct->manufacturer_date, ',');
             getline(ss, newProduct->expiry_date, ',');
 
-            if (head == NULL)
+            if (product_head == NULL)
             {
-                head = newProduct;
+                product_head = newProduct;
             }
             else
             {
-                product *temp = head;
+                product *temp = product_head;
                 while (temp->next != NULL)
                 {
                     temp = temp->next;
@@ -167,7 +346,7 @@ public:
             return;
         }
 
-        product *temp = head;
+        product *temp = product_head;
         while (temp != NULL)
         {
             file << temp->id << "," << temp->name << "," << temp->price
@@ -176,15 +355,16 @@ public:
             temp = temp->next;
         }
     }
+
     void displayProducts()
     {
-        if (head == NULL)
+        if (product_head == NULL)
         {
             cout << "No products available.\n";
             return;
         }
 
-        product *temp = head;
+        product *temp = product_head;
         cout << "Product List:\n";
         while (temp != NULL)
         {
@@ -201,13 +381,13 @@ public:
     int productIdGenerator()
     {
         int id;
-        if (head == NULL)
+        if (product_head == NULL)
         {
             id = 1;
         }
         else
         {
-            product *temp = head;
+            product *temp = product_head;
             while (temp->next != NULL)
             {
                 temp = temp->next;
@@ -246,13 +426,13 @@ public:
             newProduct->manufacturer_date = manufacturer_date;
             newProduct->expiry_date = expiry_date;
 
-            if (head == NULL)
+            if (product_head == NULL)
             {
-                head = newProduct;
+                product_head = newProduct;
             }
             else
             {
-                product *temp = head;
+                product *temp = product_head;
                 while (temp->next != NULL)
                 {
                     temp = temp->next;
@@ -275,7 +455,7 @@ public:
         cout << "Enter product ID to edit: ";
         cin >> id;
 
-        product *temp = head;
+        product *temp = product_head;
         while (temp != NULL && temp->id != id)
         {
             temp = temp->next;
@@ -354,7 +534,7 @@ public:
         cout << "Enter product ID to delete: ";
         cin >> id;
 
-        product *temp = head;
+        product *temp = product_head;
         product *prev = NULL;
 
         while (temp != NULL && temp->id != id)
@@ -371,7 +551,7 @@ public:
 
         if (prev == NULL)
         {
-            head = temp->next; // Deleting the head
+            product_head = temp->next; // Deleting the product_head
         }
         else
         {
@@ -383,6 +563,151 @@ public:
         saveToFile();
 
         cout << "Product deleted successfully.\n";
+    }
+
+    product *searchProduct(int id)
+    {
+        product *temp = product_head;
+        while (temp != NULL)
+        {
+            if (temp->id == id)
+            {
+                cout << "Product found: ID: " << temp->id << ", Name: " << temp->name
+                     << ", Price: " << temp->price
+                     << ", Quantity: " << temp->quantity
+                     << ", Manufacturer Date: " << temp->manufacturer_date
+                     << ", Expiry Date: " << temp->expiry_date << "\n";
+                return temp;
+            }
+            temp = temp->next;
+        }
+        cout << "Product not found.\n";
+        return NULL;
+    }
+};
+
+cart *cart_head = NULL;
+
+class cartHelper
+{
+public:
+    void addToCart()
+    {
+        productHelper ph;
+        ph.displayProducts();
+        while (true)
+        {
+            int id, quantity;
+            cout << "Enter product ID to add to cart (0 to finish): ";
+            cin >> id;
+            if (id == 0)
+                break;
+
+            cart *validate = searchCartProduct(id);
+            product *temp = ph.searchProduct(id);
+            if (validate != NULL)
+            {
+                total_price -= validate->price;
+                cout << "Enter quantity: ";
+                cin >> quantity;
+                while (temp->quantity < quantity)
+                {
+                    cout << "Insufficient stock. Available quantity: " << temp->quantity << "\n";
+                    cout << "Enter quantity: ";
+                    cin >> quantity;
+                }
+
+                validate->product_id = temp->id;
+                validate->product_name = temp->name;
+                validate->product_price = temp->price;
+                validate->quantity = quantity;
+                validate->price = temp->price * quantity;
+                total_price += validate->price;
+                displayCart();
+                cout << "Do you want to add another product? (y/n): ";
+                string choice;
+                cin >> choice;
+                if (choice == "n" || choice == "N")
+                    break;
+                continue;
+            }
+
+            cout << "Enter quantity: ";
+            cin >> quantity;
+            while (temp->quantity < quantity)
+            {
+                cout << "Insufficient stock. Available quantity: " << temp->quantity << "\n";
+                cout << "Enter quantity: ";
+                cin >> quantity;
+            }
+
+            cart *newCart = new cart();
+            newCart->product_id = temp->id;
+            newCart->product_name = temp->name;
+            newCart->product_price = temp->price;
+            newCart->quantity = quantity;
+            newCart->price = temp->price * quantity;
+            total_price += newCart->price;
+            if (cart_head == NULL)
+            {
+                cart_head = newCart;
+            }
+            else
+            {
+                cart *tempCart = cart_head;
+                while (tempCart->next != NULL)
+                {
+                    tempCart = tempCart->next;
+                }
+                tempCart->next = newCart;
+            }
+
+            displayCart();
+            cout << "Do you want to add another product? (y/n): ";
+            string choice;
+            cin >> choice;
+            if (choice == "n" || choice == "N")
+                break;
+        }
+    }
+
+    void displayCart()
+    {
+        if (cart_head == NULL)
+        {
+            cout << "Cart is empty.\n";
+            return;
+        }
+        cout << "Cart Items:\n";
+        cart *temp = cart_head;
+        while (temp != NULL)
+        {
+            cout << "Product ID: " << temp->product_id
+                 << ", Name: " << temp->product_name
+                 << ", Product price :" << temp->product_price
+                 << ", Quantity: " << temp->quantity
+                 << ", Price: " << temp->price << "\n";
+            temp = temp->next;
+        }
+        cout << "--------------------------\n";
+        cout << "Total Price: " << total_price << "\n";
+    }
+
+    cart *searchCartProduct(int id)
+    {
+        cart *temp = cart_head;
+        if (cart_head != NULL)
+        {
+            while (temp != NULL)
+            {
+                if (temp->product_id == id)
+                {
+                    return temp;
+                }
+                temp = temp->next;
+            }
+        }
+        return NULL;
     }
 };
 
@@ -428,16 +753,25 @@ void customerDashboard()
     while (true)
     {
         int choice;
-        cout << "\n1. View Products\n2. Logout\nEnter choice: ";
+        cout << "\n1. View Products\n2. Buy now\n3. Display Cart Product\n4. logout\nEnter choice: ";
         cin >> choice;
 
-        if (choice == 1)
+        productHelper ph;
+        cartHelper c;
+
+        switch (choice)
         {
-            cout << "Displaying products...\n"; // Placeholder for product display
-        }
-        else
-        {
+        case 1:
+            ph.displayProducts();
+            break;
+        case 2:
+            c.addToCart();
+        case 3:
+            c.displayCart();
+            break;
+        default:
             cout << "Logging out...\n";
+            return;
             break;
         }
     }
