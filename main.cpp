@@ -116,7 +116,7 @@ product *product_head = NULL;
 class productHelper
 {
 public:
-    void loadFromFile()
+    void loadFromFile();
     {
         ifstream file(productFile);
         product_head = NULL;
