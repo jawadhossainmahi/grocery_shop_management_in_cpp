@@ -119,6 +119,7 @@ public:
     void loadFromFile()
     {
         ifstream file(productFile);
+        product_head = NULL;
         if (!file)
         {
             cout << "No previous product file found.\n";
@@ -191,11 +192,22 @@ public:
         cout << "Product List:\n";
         while (temp != NULL)
         {
-            cout << "ID: " << temp->id << ", Name: " << temp->name
-                 << ", Price: " << temp->price
-                 << ", Quantity: " << temp->quantity
-                 << ", Manufacturer Date: " << temp->manufacturer_date
-                 << ", Expiry Date: " << temp->expiry_date << "\n";
+            if (logged_in_user_type == "customer" && temp->quantity > 0)
+            {
+                cout << "ID: " << temp->id << ", Name: " << temp->name
+                     << ", Price: " << temp->price
+                     << ", Quantity: " << temp->quantity
+                     << ", Manufacturer Date: " << temp->manufacturer_date
+                     << ", Expiry Date: " << temp->expiry_date << "\n";
+            }
+            else if (logged_in_user_type == "employee")
+            {
+                cout << "ID: " << temp->id << ", Name: " << temp->name
+                     << ", Price: " << temp->price
+                     << ", Quantity: " << temp->quantity
+                     << ", Manufacturer Date: " << temp->manufacturer_date
+                     << ", Expiry Date: " << temp->expiry_date << "\n";
+            }
             temp = temp->next;
         }
     }
@@ -467,6 +479,8 @@ public:
     {
         ifstream order_F(orderFile);
         ifstream orderD_F(orderDetailsFile);
+        order_head = NULL;
+        orderDetails_head = NULL;
 
         if (!order_F || !orderD_F)
         {
@@ -527,7 +541,7 @@ public:
             string idStr, order_idStr, customer_ids, product_idStr, quantityStr, priceStr;
 
             orderDetails *newOrderDetails = new orderDetails();
-            newOrderDetails->next = NULL; 
+            newOrderDetails->next = NULL;
 
             try
             {
@@ -620,7 +634,7 @@ public:
                     {
                         productHelper pH;
                         product *temp_product = pH.searchProductNoPrint(order_details_temp->product_id);
-                        cout <<"Product name : "<< temp_product->name << "    Quantity : " << order_details_temp->quantity <<"    Price : "<< order_details_temp->price << "\n";
+                        cout << "Product name : " << temp_product->name << "    Quantity : " << order_details_temp->quantity << "    Price : " << order_details_temp->price << "\n";
                         this_order_total_price += order_details_temp->price;
                     }
                     order_details_temp = order_details_temp->next;
@@ -639,6 +653,50 @@ public:
         }
     }
 
+    void showCustomerOrders()
+    {
+        order *order_temp = order_head;
+        int customer_id = logged_in_user_id;
+        if (logged_in_user_type == "employee")
+        {
+            cout << "Enter customer user id:\n";
+            cin >> customer_id;
+        }
+
+        if (order_temp != NULL)
+        {
+            while (order_temp != NULL)
+            {
+                if (order_temp->customer_id = customer_id)
+                {
+                    orderDetails *order_details_temp = orderDetails_head;
+                    cout << "Order No :" << order_temp->id << " \n";
+                    cout << "-----------------------------------------------------------------------\n";
+                    double this_order_total_price = 0;
+                    while (order_details_temp != NULL)
+                    {
+                        if (order_details_temp->order_id == order_temp->id)
+                        {
+                            productHelper pH;
+                            product *temp_product = pH.searchProductNoPrint(order_details_temp->product_id);
+                            cout << "Product name : " << temp_product->name << "    Quantity : " << order_details_temp->quantity << "    Price : " << order_details_temp->price << "\n";
+                            this_order_total_price += order_details_temp->price;
+                        }
+                        order_details_temp = order_details_temp->next;
+                    }
+
+                    cout << "\n-----------------------\n";
+                    cout << "Total Price   :" << this_order_total_price << "\n";
+                    cout << "------------------------------------------------------------------------\n";
+                }
+                order_temp = order_temp->next;
+            }
+        }
+        else
+        {
+            cout << "\nNo order created.\n";
+        }
+    }
     void saveToFile()
     {
         ofstream order_F(orderFile);
@@ -674,9 +732,9 @@ public:
     void addToCart()
     {
         productHelper ph;
-        ph.displayProducts();
         while (true)
         {
+            ph.displayProducts();
             int id, quantity;
             cout << "Enter product ID to add to cart (0 to finish): ";
             cin >> id;
@@ -831,13 +889,28 @@ public:
                     order_details_temp = order_details_temp->next;
                 }
 
+                // product stock qty update
+
+                product *product_temp = product_head;
+                while (product_temp != NULL)
+                {
+                    if (product_temp->id == cart_temp->product_id)
+                    {
+                        product_temp->quantity -= cart_temp->quantity;
+                    }
+
+                    product_temp = product_temp->next;
+                }
+
                 cart_temp = cart_temp->next;
             }
 
             // order details create end
             total_price = 0;
             order_helper.saveToFile();
-
+            cart_head = NULL;
+            productHelper ph;
+            ph.saveToFile();
             cout << " Order successfully created. ";
             return true;
         }
@@ -877,7 +950,7 @@ void employeeDashboard()
         orderHelper oH;
         oH.loadFromFile();
         int choice;
-        cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Show orders\n7. Logout\n Enter choice: ";
+        cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Show orders\n7. Search Customer Order\n8. Logout\nEnter choice: ";
         cin >> choice;
 
         switch (choice)
@@ -901,6 +974,9 @@ void employeeDashboard()
         case 6:
             order_helper.showOrders();
             break;
+        case 7:
+            order_helper.showCustomerOrders();
+            break;
         default:
             cout << "Logging out...\n";
             return;
@@ -915,12 +991,13 @@ void customerDashboard()
     while (true)
     {
         int choice;
-        cout << "\n1. View Products\n2. Add to Cart\n3. Display Cart Product\n4. Checkout\n5.Logout\n Enter choice: ";
+        cout << "\n1. View Products\n2. Add to Cart\n3. Display Cart Product\n4. Checkout\n5. My orders\n6.Logout\n Enter choice: ";
         cin >> choice;
 
         productHelper ph;
         cartHelper c;
-
+        orderHelper oH;
+        oH.loadFromFile();
         switch (choice)
         {
         case 1:
@@ -933,6 +1010,9 @@ void customerDashboard()
             break;
         case 4:
             c.checkout();
+            break;
+        case 5:
+            oH.showCustomerOrders();
             break;
         default:
             cout << "Logging out...\n";
