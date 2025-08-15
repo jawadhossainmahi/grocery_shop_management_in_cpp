@@ -65,9 +65,9 @@ bool duplicateUsernameCheck(const string &username, const string &filename)
 void registerUser(const string &role)
 {
     string username, password;
-    cout << "Enter username: ";
+    cout << "Enter username                : ";
     cin >> username;
-    cout << "Enter password: ";
+    cout << "Enter password                : ";
     cin >> password;
 
     string filename = role == "customer" ? customerFile : employeeFile;
@@ -78,7 +78,7 @@ void registerUser(const string &role)
         int id = getNextId(filename);
         string encrypted = encrypt(password);
         file << id << "," << username << "," << encrypted << "\n";
-        cout << "Registration successful. Your ID is " << id << "\n";
+        cout << "\n\t\t\t\t==== Registration successful ==== \n\t\t\t\t     <---- Your ID is " << id <<" ---->"<< "\n";
     }
 }
 
@@ -114,7 +114,7 @@ product *head = NULL;
 class productHelper
 {
 public:
-    void loadFromFile();
+    void loadFromFile()
     {
         ifstream file(productFile);
         if (!file)
@@ -156,7 +156,7 @@ public:
                 temp->next = newProduct;
             }
         }
-    };
+    }
 
     void saveToFile()
     {
@@ -180,7 +180,7 @@ public:
     {
         if (head == NULL)
         {
-            cout << "No products available.\n";
+            cout << "\n\t\t\t\t!!! No products available !!!\n";
             return;
         }
 
@@ -188,11 +188,11 @@ public:
         cout << "Product List:\n";
         while (temp != NULL)
         {
-            cout << "ID: " << temp->id << ", Name: " << temp->name
-                 << ", Price: " << temp->price
-                 << ", Quantity: " << temp->quantity
-                 << ", Manufacturer Date: " << temp->manufacturer_date
-                 << ", Expiry Date: " << temp->expiry_date << "\n";
+            cout << "ID: " << temp->id << "\n Name..............: " << temp->name
+                 << "\n Price..............: " << temp->price
+                 << "\n Quantity...........: " << temp->quantity
+                 << "\n Manufacturer Date..: " << temp->manufacturer_date
+                 << "\n Expiry Date........: " << temp->expiry_date << "\n\n";
             temp = temp->next;
         }
     }
@@ -227,15 +227,15 @@ public:
             string name, manufacturer_date, expiry_date;
             double price;
             int quantity;
-            cout << "Enter product name: ";
+            cout << "\nEnter product name                          : ";
             cin >> name;
-            cout << "Enter product price: ";
+            cout << "Enter product price                         : ";
             cin >> price;
-            cout << "Enter product quantity: ";
+            cout << "Enter product quantity                      : ";
             cin >> quantity;
             cout << "Enter product manufacturer date (YYYY-MM-DD): ";
             cin >> manufacturer_date;
-            cout << "Enter product expiry date (YYYY-MM-DD): ";
+            cout << "Enter product expiry date (YYYY-MM-DD)      : ";
             cin >> expiry_date;
 
             product *newProduct = new product();
@@ -262,8 +262,8 @@ public:
 
             ofstream file(productFile, ios::app);
             file << newProduct->id << "," << name << "," << price << "," << quantity << "," << manufacturer_date << "," << expiry_date << "\n";
-            cout << "Product added successfully. Product ID: " << newProduct->id << "\n";
-            cout << "Do you want to add another product? (y/n): ";
+            cout << "\t\t\t\t  ==== Product added successfully ==== \n\t\t\t\t\t<---- Product ID: " << newProduct->id <<" ---->"<< "\n";
+            cout << "\nDo you want to add another product? (y/n): ";
             cin >> choice;
         }
     }
@@ -272,7 +272,7 @@ public:
     {
         int id;
         displayProducts();
-        cout << "Enter product ID to edit: ";
+        cout << "Enter product ID to edit                   : ";
         cin >> id;
 
         product *temp = head;
@@ -283,7 +283,7 @@ public:
 
         if (temp == NULL)
         {
-            cout << "Product not found.\n";
+            cout << "\n\t\t\t\t !!! Product not found !!!\n";
             return;
         }
 
@@ -291,14 +291,14 @@ public:
         double price;
         int quantity;
 
-        cout << "Enter new product name (current: " << temp->name << ", press: s for keep current): ";
+        cout << "Enter new product name (current: " << temp->name << ", press: s for keep current)     : ";
 
         cin >> name;
         if (name == "s" || name == "S")
         {
             name = temp->name; 
         }
-        cout << "Enter new product price (current: " << temp->price << ", press: s for keep current): ";
+        cout << "Enter new product price (current: " << temp->price << ", press: s for keep current)    : ";
         cin >> price;
         if (price == 's' || price == 'S')
         {
@@ -377,14 +377,13 @@ public:
 
 void employeeDashboard()
 {
-    cout << "Welcome to the Employee Dashboard\n";
+    cout << "\t\t\t  <---- Welcome to the Employee Dashboard ---->\n";
     productHelper ph;
     while (true)
     {
         int choice;
-        cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Logout\n Enter choice: ";
+        cout << "\n\t\t\t\t    1. View Customer List\n\t\t\t\t    2. View Product\n\t\t\t\t    3. Add Product\n\t\t\t\t    4. Edit Product\n\t\t\t\t    5. Delete Product\n\t\t\t\t    6. Logout\n\t\t\t\t    Enter choice: ";
         cin >> choice;
-        
         switch (choice)
         {
         case 1:
@@ -413,11 +412,11 @@ void employeeDashboard()
 
 void customerDashboard()
 {
-    cout << "Welcome to the Customer Dashboard\n";
+    cout << "\t\t\t<---- Welcome to the Customer Dashboard ---->\n";
     while (true)
     {
         int choice;
-        cout << "\n1. View Products\n2. Logout\nEnter choice: ";
+        cout << "\n\t\t\t\t1. View Products\n\t\t\t\t2. Logout\n\t\t\t\tEnter choice: ";
         cin >> choice;
 
         if (choice == 1)
@@ -426,7 +425,7 @@ void customerDashboard()
         }
         else
         {
-            cout << "Logging out...\n";
+            cout << "\n\t\t\t\t=== Logging out... ====\n";
             break;
         }
     }
@@ -435,9 +434,9 @@ void customerDashboard()
 bool loginUser(const string &role)
 {
     string username, password;
-    cout << "Enter username: ";
+    cout << "Enter username                : ";
     cin >> username;
-    cout << "Enter password: ";
+    cout << "Enter password                : ";
     cin >> password;
 
     string filename = role == "customer" ? customerFile : employeeFile;
@@ -453,7 +452,7 @@ bool loginUser(const string &role)
         getline(ss, pass, ',');
         if (user == username && pass == encrypted)
         {
-            cout << "Login successful. Welcome " << role << " " << username << "\n";
+            cout << "\n\n\t\t\t\t ==== Login successful ==== \n\t\t\t\t**** Welcome " << role << " " << username <<" ****"<< "\n\n";
             if (role == "customer")
             {
                 customerDashboard();
@@ -465,7 +464,7 @@ bool loginUser(const string &role)
             return true;
         }
     }
-    cout << "Invalid credentials\n";
+    cout << "\n\t\t\t     !!! Invalid credentials !!!\n";
     return false;
 }
 
@@ -476,8 +475,10 @@ int main()
     while (true)
     {
         int choice;
-        cout << "\n1. Register\n2. Login\n3. Exit\nEnter choice: ";
+        cout<<"\n\t\t\t<---- Mahi and Shiplu's Super Shop ---->\n";
+        cout << "\n\t\t\t\t1. Register\n\t\t\t\t2. Login\n\t\t\t\t3. Exit\n\t\t\t\tEnter choice: ";
         cin >> choice;
+        cout<<"\n";
 
         if (choice == 1)
         {
