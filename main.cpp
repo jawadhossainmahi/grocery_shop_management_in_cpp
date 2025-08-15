@@ -93,7 +93,7 @@ void CustomerList()
         string id, user;
         getline(ss, id, ',');
         getline(ss, user, ',');
-        cout << "ID: " << id << " " << " username: " << user << endl;
+        cout << "\tID: " << id << "\n" << "\tusername: " << user << endl;
     }
 }
 
@@ -188,7 +188,7 @@ public:
         cout << "Product List:\n";
         while (temp != NULL)
         {
-            cout << "ID: " << temp->id << "\n Name..............: " << temp->name
+            cout << "ID: " << temp->id << "\n Name...............: " << temp->name
                  << "\n Price..............: " << temp->price
                  << "\n Quantity...........: " << temp->quantity
                  << "\n Manufacturer Date..: " << temp->manufacturer_date
@@ -369,7 +369,7 @@ public:
 
         saveToFile();
 
-        cout << "Product deleted successfully.\n";
+        cout << "\t\t\t\tProduct deleted successfully\n\t\t\t\t_____________________________\n";
     }
 
 
@@ -413,6 +413,7 @@ void employeeDashboard()
 void customerDashboard()
 {
     cout << "\t\t\t<---- Welcome to the Customer Dashboard ---->\n";
+    productHelper ph;
     while (true)
     {
         int choice;
@@ -421,7 +422,9 @@ void customerDashboard()
 
         if (choice == 1)
         {
-            cout << "Displaying products...\n"; // Placeholder for product display
+            cout << "Displaying products...\n\n"; // Placeholder for product display
+            ph.displayProducts();
+            
         }
         else
         {
@@ -475,7 +478,7 @@ int main()
     while (true)
     {
         int choice;
-        cout<<"\n\t\t\t<---- Mahi and Shiplu's Super Shop ---->\n";
+        cout<<"\n\t\t\t____________________________________________\n\n\t\t\t  <---- Mahi and Shiplu's Super Shop ---->\n\t\t\t____________________________________________\n";
         cout << "\n\t\t\t\t1. Register\n\t\t\t\t2. Login\n\t\t\t\t3. Exit\n\t\t\t\tEnter choice: ";
         cin >> choice;
         cout<<"\n";
