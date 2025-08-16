@@ -194,19 +194,19 @@ public:
         {
             if (logged_in_user_type == "customer" && temp->quantity > 0)
             {
-                cout << "ID: " << temp->id << ", Name: " << temp->name
-                     << ", Price: " << temp->price
-                     << ", Quantity: " << temp->quantity
-                     << ", Manufacturer Date: " << temp->manufacturer_date
-                     << ", Expiry Date: " << temp->expiry_date << "\n";
+                cout << "ID: " << temp->id << "\n\tName---------------: " << temp->name
+                     << "\n\tPrice--------------: " << temp->price
+                     << "\n\tQuantity-----------: " << temp->quantity
+                     << "\n\tManufacturer Date--: " << temp->manufacturer_date
+                     << "\n\tExpiry Date--------: " << temp->expiry_date << "\n________________________________________\n\n";
             }
             else if (logged_in_user_type == "employee")
             {
-                cout << "ID: " << temp->id << ", Name: " << temp->name
-                     << ", Price: " << temp->price
-                     << ", Quantity: " << temp->quantity
-                     << ", Manufacturer Date: " << temp->manufacturer_date
-                     << ", Expiry Date: " << temp->expiry_date << "\n";
+                cout << "ID: " << temp->id << "\n\tName---------------: " << temp->name
+                     << "\n\tPrice--------------: " << temp->price
+                     << "\n\tQuantity-----------: " << temp->quantity
+                     << "\n\tManufacturer Date--: " << temp->manufacturer_date
+                     << "\n\tExpiry Date--------: " << temp->expiry_date << "\n________________________________________\n\n";
             }
             temp = temp->next;
         }
@@ -287,7 +287,7 @@ public:
     {
         int id;
         displayProducts();
-        cout << "Enter product ID to edit                   : ";
+        cout << "Enter product ID to edit: ";
         cin >> id;
 
         product *temp = product_head;
@@ -307,7 +307,7 @@ public:
         int quantity;
 
         string temp_str;
-        cout << "Enter new product name (current: " << temp->name << ", press: s for keep current): ";
+        cout << "Enter new product name (current: " << temp->name << ", press: s for keep current)                    : ";
         cin >> temp_str;
         if (temp_str == "s" || temp_str == "S")
         {
@@ -317,7 +317,7 @@ public:
         {
             name = temp_str;
         }
-        cout << "Enter new product price (current: " << temp->price << ", press: s for keep current): ";
+        cout << "Enter new product price (current: " << temp->price << ", press: s for keep current)                     : ";
         cin >> temp_str;
         if (temp_str == "s" || temp_str == "S")
         {
@@ -327,7 +327,7 @@ public:
         {
             price = stod(temp_str);
         }
-        cout << "Enter new product quantity (current: " << temp->quantity << ", press: s for keep current): ";
+        cout << "Enter new product quantity (current: " << temp->quantity << ", press: s for keep current)                  : ";
         cin >> temp_str;
         if (temp_str == "s" || temp_str == "S")
         {
@@ -338,13 +338,13 @@ public:
             quantity = stoi(temp_str);
         }
 
-        cout << "Enter new product manufacturer date (current: " << temp->manufacturer_date << ", press: s for keep current): ";
+        cout << "Enter new product manufacturer date (current: " << temp->manufacturer_date << ", press: s for keep current)  : ";
         cin >> manufacturer_date;
         if (manufacturer_date == "s" || manufacturer_date == "S")
         {
             manufacturer_date = temp->manufacturer_date;
         }
-        cout << "Enter new product expiry date (current: " << temp->expiry_date << ", press: s for keep current): ";
+        cout << "Enter new product expiry date (current: " << temp->expiry_date << ", press: s for keep current)        : ";
         cin >> expiry_date;
         if (expiry_date == "s" || expiry_date == "S")
         {
@@ -359,7 +359,7 @@ public:
 
         saveToFile();
 
-        cout << "Product updated successfully.\n";
+        cout << "\n\t\t\t\t==== Product updated successfully ====\n\t\t\t\t_______________________________________\n";
     }
 
     void deleteProduct()
@@ -380,7 +380,7 @@ public:
 
         if (temp == NULL)
         {
-            cout << "Product not found.\n";
+            cout << "\n\t\t\t\t!!! Product not found !!!\n";
             return;
         }
 
@@ -397,7 +397,7 @@ public:
 
         saveToFile();
 
-        cout << "Product deleted successfully.\n";
+        cout << "\n\t\t\t\t==== Product deleted successfully ====\n\t\t\t\t________________________________________\n";
     }
     product *searchProductNoPrint(int id)
     {
@@ -421,11 +421,11 @@ public:
         {
             if (temp->id == id)
             {
-                cout << "Product found: ID: " << temp->id << ", Name: " << temp->name
-                     << ", Price: " << temp->price
-                     << ", Quantity: " << temp->quantity
-                     << ", Manufacturer Date: " << temp->manufacturer_date
-                     << ", Expiry Date: " << temp->expiry_date << "\n";
+                cout << "Product found:\n ID: " << temp->id << "\n\tName---------------: " << temp->name
+                     << "\n\tPrice--------------: " << temp->price
+                     << "\n\tQuantity-----------: " << temp->quantity
+                     << "\n\tManufacturer Date--: " << temp->manufacturer_date
+                     << "\n\tExpiry Date--------: " << temp->expiry_date << "\n";
                 return temp;
             }
             temp = temp->next;
@@ -475,7 +475,7 @@ orderDetails *orderDetails_head = NULL;
 class orderHelper
 {
 public:
-    void loadFromFile()
+    bool loadFromFile()
     {
         ifstream order_F(orderFile);
         ifstream orderD_F(orderDetailsFile);
@@ -484,8 +484,7 @@ public:
 
         if (!order_F || !orderD_F)
         {
-            cout << "No previous order file found.\n";
-            return;
+            return false;
         }
 
         string line;
@@ -577,6 +576,7 @@ public:
                 temp->next = newOrderDetails;
             }
         }
+        return true;
     }
 
     int orderIdGenerator()
@@ -746,12 +746,12 @@ public:
             if (validate != NULL)
             {
                 total_price -= validate->price;
-                cout << "Enter quantity: ";
+                cout << "\nEnter quantity: ";
                 cin >> quantity;
                 while (temp->quantity < quantity)
                 {
                     cout << "Insufficient stock. Available quantity: " << temp->quantity << "\n";
-                    cout << "Enter quantity: ";
+                    cout << "\nEnter quantity: ";
                     cin >> quantity;
                 }
 
@@ -770,12 +770,12 @@ public:
                 continue;
             }
 
-            cout << "Enter quantity: ";
+            cout << "\nEnter quantity: ";
             cin >> quantity;
             while (temp->quantity < quantity)
             {
                 cout << "Insufficient stock. Available quantity: " << temp->quantity << "\n";
-                cout << "Enter quantity: ";
+                cout << "\nEnter quantity: ";
                 cin >> quantity;
             }
 
@@ -821,14 +821,14 @@ public:
         while (temp != NULL)
         {
             cout << "Product ID: " << temp->product_id
-                 << ", Name: " << temp->product_name
-                 << ", Product price :" << temp->product_price
-                 << ", Quantity: " << temp->quantity
-                 << ", Price: " << temp->price << "\n";
+                 << "\n\tName-----------: " << temp->product_name
+                 << "\n\tProduct price--:" << temp->product_price
+                 << "\n\tQuantity-------: " << temp->quantity
+                 << "\n\tPrice----------: " << temp->price << "\n________________________________\n\n";
             temp = temp->next;
         }
-        cout << "--------------------------\n";
-        cout << "Total Price: " << total_price << "\n";
+        cout << "Total Price------------: " << total_price << "\n";
+        cout << "________________________________\n\n";
     }
 
     bool checkout()
@@ -911,7 +911,7 @@ public:
             cart_head = NULL;
             productHelper ph;
             ph.saveToFile();
-            cout << " Order successfully created. ";
+            cout << "\n\t\t\t==== Order successfully created ====\n";
             return true;
         }
         else
@@ -942,15 +942,13 @@ public:
 
 void employeeDashboard()
 {
-    cout << "\t\t\t  <---- Welcome to the Employee Dashboard ---->\n";
+    cout << "\t\t\t  <---- Welcome to the Employee Dashboard ---->\n\t\t\t_________________________________________________\n\n";
     productHelper ph;
     orderHelper order_helper;
     while (true)
     {
-        orderHelper oH;
-        oH.loadFromFile();
         int choice;
-        cout << "\n1. View Customer List\n2. View Product\n3. Add Product\n4. Edit Product\n5. Delete Product\n6. Show orders\n7. Search Customer Order\n8. Logout\nEnter choice: ";
+        cout << "\n\t\t\t\t1. View Customer List\n\t\t\t\t2. View Product\n\t\t\t\t3. Add Product\n\t\t\t\t4. Edit Product\n\t\t\t\t5. Delete Product\n\t\t\t\t6. Show orders\n\t\t\t\t7. Search Customer Order\n\t\t\t\t8. Logout\n\t\t\t\tEnter choice: ";
         cin >> choice;
 
         switch (choice)
@@ -959,7 +957,6 @@ void employeeDashboard()
             CustomerList();
             break;
         case 2:
-
             ph.displayProducts();
             break;
         case 3:
@@ -972,33 +969,44 @@ void employeeDashboard()
             ph.deleteProduct();
             break;
         case 6:
-            order_helper.showOrders();
+        {
+            orderHelper oH;
+            if (!oH.loadFromFile()) {
+                cout << "No previous order file found.\n";
+            } else {
+                oH.showOrders();
+            }
             break;
+        }
         case 7:
-            order_helper.showCustomerOrders();
+        {
+            orderHelper oH;
+            if (!oH.loadFromFile()) {
+                cout << "No previous order file found.\n";
+            } else {
+                oH.showCustomerOrders();
+            }
             break;
+        }
         default:
             cout << "Logging out...\n";
             return;
-            break;
         }
     }
 }
 
 void customerDashboard()
 {
-    cout << "\t\t\t<---- Welcome to the Customer Dashboard ---->\n";
+    cout << "\t\t\t  <---- Welcome to the Customer Dashboard ---->\n\t\t\t________________________________________________\n";
     productHelper ph;
     while (true)
     {
         int choice;
-        cout << "\n1. View Products\n2. Add to Cart\n3. Display Cart Product\n4. Checkout\n5. My orders\n6.Logout\n Enter choice: ";
+        cout << "\n\t\t\t\t1. View Products\n\t\t\t\t2. Add to Cart\n\t\t\t\t3. Display Cart Product\n\t\t\t\t4. Checkout\n\t\t\t\t5. My orders\n\t\t\t\t6.Logout\n\t\t\t\tEnter choice: ";
         cin >> choice;
 
         productHelper ph;
         cartHelper c;
-        orderHelper oH;
-        oH.loadFromFile();
         switch (choice)
         {
         case 1:
@@ -1006,6 +1014,7 @@ void customerDashboard()
             break;
         case 2:
             c.addToCart();
+            break;
         case 3:
             c.displayCart();
             break;
@@ -1013,12 +1022,18 @@ void customerDashboard()
             c.checkout();
             break;
         case 5:
-            oH.showCustomerOrders();
+        {
+            orderHelper oH;
+            if (!oH.loadFromFile()) {
+                cout << "No previous order file found.\n";
+            } else {
+                oH.showCustomerOrders();
+            }
             break;
+        }
         default:
-            cout << "Logging out...\n";
+            cout << "Logging out...\n\n\t\t\t\t==== THANK YOU ====\n";
             return;
-            break;
         }
     }
 }
@@ -1046,7 +1061,7 @@ bool loginUser(const string &role)
         {
             logged_in_user_id = stoi(id);
             logged_in_user_type = role;
-            cout << "Login successful. Welcome " << role << " " << username << "\n";
+            cout << "\n\t\t\t\t ==== Login successful ====\n \t\t\t\t**** Welcome " << role << " " << username << " ****\n\n";
             if (role == "customer")
             {
                 customerDashboard();
