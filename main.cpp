@@ -741,34 +741,19 @@ public:
             if (id == 0)
                 break;
 
-            cart *validate = searchCartProduct(id);
             product *temp = ph.searchProduct(id);
-            if (validate != NULL)
+            if (temp == NULL)
             {
-                total_price -= validate->price;
-                cout << "Enter quantity: ";
-                cin >> quantity;
-                while (temp->quantity < quantity)
-                {
-                    cout << "Insufficient stock. Available quantity: " << temp->quantity << "\n";
-                    cout << "Enter quantity: ";
-                    cin >> quantity;
-                }
-
-                validate->product_id = temp->id;
-                validate->product_name = temp->name;
-                validate->product_price = temp->price;
-                validate->quantity = quantity;
-                validate->price = temp->price * quantity;
-                total_price += validate->price;
-                displayCart();
-                cout << "Do you want to add another product? (y/n): ";
-                string choice;
-                cin >> choice;
-                if (choice == "n" || choice == "N")
-                    break;
+                cout << "Invalid product ID.\n";
                 continue;
             }
+            if (temp->quantity == 0)
+            {
+                cout << "Product is out of stock.\n";
+                continue;
+            }
+
+            cart *validate = searchCartProduct(id);
 
             cout << "Enter quantity: ";
             cin >> quantity;
@@ -779,26 +764,40 @@ public:
                 cin >> quantity;
             }
 
-            cart *newCart = new cart();
-            newCart->product_id = temp->id;
-            newCart->product_name = temp->name;
-            newCart->product_price = temp->price;
-            newCart->quantity = quantity;
-            newCart->price = temp->price * quantity;
-            total_price += newCart->price;
-            if (cart_head == NULL)
+            if (validate != NULL)
             {
-                cart_head = newCart;
+                total_price -= validate->price;
+                validate->quantity = quantity;
+                validate->price = temp->price * quantity;
+                total_price += validate->price;
             }
             else
             {
-                cart *tempCart = cart_head;
-                while (tempCart->next != NULL)
+                if (temp->quantity > 0)
                 {
-                    tempCart = tempCart->next;
+                    cart *newCart = new cart();
+                    newCart->product_id = temp->id;
+                    newCart->product_name = temp->name;
+                    newCart->product_price = temp->price;
+                    newCart->quantity = quantity;
+                    newCart->price = temp->price * quantity;
+                    newCart->next = NULL;
+
+                    if (cart_head == NULL)
+                        cart_head = newCart;
+                    else
+                    {
+                        cart *tempCart = cart_head;
+                        while (tempCart->next != NULL)
+                            tempCart = tempCart->next;
+                        tempCart->next = newCart;
+                    }
+
+                    total_price += newCart->price;
                 }
-                tempCart->next = newCart;
             }
+
+            temp->quantity -= quantity;
 
             displayCart();
             cout << "Do you want to add another product? (y/n): ";
