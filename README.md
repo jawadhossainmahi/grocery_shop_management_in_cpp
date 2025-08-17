@@ -41,6 +41,7 @@ g++ main.cpp -o inventory-system
 **Run the program**
 ```bash
 ./inventory-system
-> ```
+```
+
 
 
