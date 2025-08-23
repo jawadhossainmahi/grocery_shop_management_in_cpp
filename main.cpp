@@ -81,7 +81,7 @@ void registerUser(const string &role)
         int id = getNextId(filename);
         string encrypted = encrypt(password);
         file << id << "," << username << "," << encrypted << "\n";
-        cout << "\n\t\t\t\t==== Registration successful ==== \n\t\t\t\t     <---- Your ID is " << id <<" ---->"<< "\n";
+        cout << "\n\t\t\t\t==== Registration successful ==== \n\t\t\t\t     <---- Your ID is " << id << " ---->" << "\n";
     }
 }
 
@@ -96,7 +96,8 @@ void CustomerList()
         string id, user;
         getline(ss, id, ',');
         getline(ss, user, ',');
-        cout << "\tID: " << id << "\n" << "\tusername: " << user << endl;
+        cout << "\tID: " << id << "\n"
+             << "\tusername: " << user << endl;
     }
 }
 
@@ -277,7 +278,7 @@ public:
 
             ofstream file(productFile, ios::app);
             file << newProduct->id << "," << name << "," << price << "," << quantity << "," << manufacturer_date << "," << expiry_date << "\n";
-            cout << "\t\t\t\t  ==== Product added successfully ==== \n\t\t\t\t\t<---- Product ID: " << newProduct->id <<" ---->"<< "\n";
+            cout << "\t\t\t\t  ==== Product added successfully ==== \n\t\t\t\t\t<---- Product ID: " << newProduct->id << " ---->" << "\n";
             cout << "\nDo you want to add another product? (y/n): ";
             cin >> choice;
         }
@@ -665,10 +666,12 @@ public:
 
         if (order_temp != NULL)
         {
+            int count = 0;
             while (order_temp != NULL)
             {
-                if (order_temp->customer_id = customer_id)
+                if (order_temp->customer_id == customer_id)
                 {
+                    count++;
                     orderDetails *order_details_temp = orderDetails_head;
                     cout << "Order No :" << order_temp->id << " \n";
                     cout << "-----------------------------------------------------------------------\n";
@@ -690,6 +693,10 @@ public:
                     cout << "------------------------------------------------------------------------\n";
                 }
                 order_temp = order_temp->next;
+            }
+            if (count == 0)
+            {
+                cout << "\n\t\t\t\t!!! No order created !!!\n";
             }
         }
         else
@@ -767,6 +774,7 @@ public:
             if (validate != NULL)
             {
                 total_price -= validate->price;
+                temp->quantity += validate->quantity;
                 validate->quantity = quantity;
                 validate->price = temp->price * quantity;
                 total_price += validate->price;
@@ -889,17 +897,17 @@ public:
                 }
 
                 // product stock qty update
+                // dont need this we are already updating the stock in the add to cart
+                // product *product_temp = product_head;
+                // while (product_temp != NULL)
+                // {
+                //     if (product_temp->id == cart_temp->product_id)
+                //     {
+                //         product_temp->quantity -= cart_temp->quantity;
+                //     }
 
-                product *product_temp = product_head;
-                while (product_temp != NULL)
-                {
-                    if (product_temp->id == cart_temp->product_id)
-                    {
-                        product_temp->quantity -= cart_temp->quantity;
-                    }
-
-                    product_temp = product_temp->next;
-                }
+                //     product_temp = product_temp->next;
+                // }
 
                 cart_temp = cart_temp->next;
             }
@@ -970,9 +978,12 @@ void employeeDashboard()
         case 6:
         {
             orderHelper oH;
-            if (!oH.loadFromFile()) {
+            if (!oH.loadFromFile())
+            {
                 cout << "No previous order file found.\n";
-            } else {
+            }
+            else
+            {
                 oH.showOrders();
             }
             break;
@@ -980,9 +991,12 @@ void employeeDashboard()
         case 7:
         {
             orderHelper oH;
-            if (!oH.loadFromFile()) {
+            if (!oH.loadFromFile())
+            {
                 cout << "No previous order file found.\n";
-            } else {
+            }
+            else
+            {
                 oH.showCustomerOrders();
             }
             break;
@@ -1023,9 +1037,12 @@ void customerDashboard()
         case 5:
         {
             orderHelper oH;
-            if (!oH.loadFromFile()) {
+            if (!oH.loadFromFile())
+            {
                 cout << "No previous order file found.\n";
-            } else {
+            }
+            else
+            {
                 oH.showCustomerOrders();
             }
             break;
@@ -1087,10 +1104,10 @@ int main()
     while (true)
     {
         int choice;
-        cout<<"\n\t\t\t____________________________________________\n\n\t\t\t  <---- Mahi and Shiplu's Super Shop ---->\n\t\t\t____________________________________________\n";
+        cout << "\n\t\t\t____________________________________________\n\n\t\t\t  <---- Mahi and Shiplu's Super Shop ---->\n\t\t\t____________________________________________\n";
         cout << "\n\t\t\t\t1. Register\n\t\t\t\t2. Login\n\t\t\t\t3. Exit\n\t\t\t\tEnter choice: ";
         cin >> choice;
-        cout<<"\n";
+        cout << "\n";
 
         if (choice == 1)
         {
